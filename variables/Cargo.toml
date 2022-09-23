@@ -12,6 +12,19 @@ path = "src/variables/main.rs"
 name = "arrays"
 path = "src/arrays/main.rs"
 
+[[bin]]
+name = "functions"
+path = "src/functions/main.rs"
+
+[[bin]]
+name = "memory"
+path = "src/memory/main.rs"
+
+[[bin]]
+name = "struct"
+path = "src/struct/main.rs"
+
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
