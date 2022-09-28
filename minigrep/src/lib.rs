@@ -1,13 +1,13 @@
 use std::{env, error::Error, fs};
 
-pub struct Config {
-    pub query: String,
-    pub file_path: String,
+pub struct Config<'a> {
+    pub query: &'a str,
+    pub file_path: &'a str,
     pub ignore_case: bool,
 }
 
-impl Config {
-    pub fn build(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
+impl<'a> Config<'a> {
+    pub fn build(mut args: impl Iterator<Item = &'a str>) -> Result<Config<'a>, &'static str> {
         args.next();
 
         let query = match args.next() {
@@ -19,13 +19,16 @@ impl Config {
             Some(arg) => arg,
             None => return Err("Didn't get a file path"),
         };
+
         let ignore_case = env::var("IGNORE_CASE").is_ok();
 
-        Ok(Config {
+        let conf: Config<'a> = Config {
             query,
             file_path,
             ignore_case,
-        })
+        };
+
+        Ok(conf)
     }
 }
 
@@ -33,9 +36,9 @@ pub fn run(config: &Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(&config.file_path)?;
 
     let results = if config.ignore_case {
-        search_case_insensitive(&config.query, &contents)
+        search_case_insensitive(config.query, &contents)
     } else {
-        search(&config.query, &contents)
+        search(config.query, &contents)
     };
 
     for line in results {

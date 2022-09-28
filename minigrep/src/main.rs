@@ -1,8 +1,17 @@
 use minigrep::{run, Config};
-use std::{env, process};
+use std::{env, process, rc::Rc};
 
 fn main() {
-    let config = Config::build(env::args()).unwrap_or_else(|err| {
+    let x: env::Args = env::args();
+    let y: Vec<String> = x.into_iter().collect();
+    let mut v = vec![];
+    for v1 in y.into_iter() {
+        v.push(Rc::new(v1));
+    }
+    //for v1 in y.iter() {
+    //    v.push(v1.as_str());
+    //}
+    let config = Config::build(v.iter().map(|x| x.as_str())).unwrap_or_else(|err| {
         println!("Error: {}", err);
         process::exit(1)
     });
